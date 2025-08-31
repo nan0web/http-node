@@ -1,0 +1,29 @@
+{
+	"name": "@nan0web/auth-node",
+	"version": "1.0.0",
+	"description": "Authorization node.js server for nan0web",
+	"main": "src/index.js",
+	"type": "module",
+	"bin": {
+		"nan0auth": "bin/auth-server.js"
+	},
+	"scripts": {
+		"test": "node --test"
+	},
+	"keywords": [],
+	"author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+	"license": "ISC",
+	"packageManager": "pnpm@10.11.0",
+	"devDependencies": {
+		"@nan0web/db": "workspace:*",
+		"@nan0web/db-fs": "workspace:*",
+		"@nan0web/http": "workspace:*",
+		"@nan0web/log": "workspace:*"
+	},
+	"peerDependencies": {
+		"@nan0web/db": "^1.0.0",
+		"@nan0web/db-fs": "^1.0.0",
+		"@nan0web/http": "^1.0.0",
+		"@nan0web/log": "^1.0.0"
+	}
+}
