@@ -14,4 +14,6 @@ import ResponseMessage from './messages/ResponseMessage.js';
 import Router from './server/Router.js';
 import { createServer } from './server/index.js';
 import { Server } from './server/index.js';
-export { fetch, APIRequest, get, post, put, patch, head, options, del, middlewares, IncomingMessage, ResponseMessage, Router, createServer, Server };
+import mockFetch from './test/mockFetch.js';
+import TestServer from './test/TestServer.js';
+export { fetch, APIRequest, get, post, put, patch, head, options, del, middlewares, IncomingMessage, ResponseMessage, Router, createServer, Server, mockFetch, TestServer };
