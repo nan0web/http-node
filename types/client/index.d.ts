@@ -1,0 +1,11 @@
+export default fetch;
+import fetch from "./fetch.js";
+import { APIRequest } from "./fetch.js";
+import { get } from "./fetch.js";
+import { post } from "./fetch.js";
+import { put } from "./fetch.js";
+import { patch } from "./fetch.js";
+import { head } from "./fetch.js";
+import { options } from "./fetch.js";
+import { del } from "./fetch.js";
+export { fetch, APIRequest, get, post, put, patch, head, options, del };

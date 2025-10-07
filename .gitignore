@@ -1,0 +1,8 @@
+node_modules/
+/dist
+/test/certs/
+/llm/
+.llm/
+llm.config.js
+chat/
+me.md

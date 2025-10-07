@@ -1,0 +1,51 @@
+{
+	"name": "@nan0web/http-node",
+	"version": "1.0.0",
+	"description": "",
+	"main": "./src/index.js",
+	"types": "./types/index.d.ts",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./src/index.js",
+			"types": "./types/index.d.ts"
+		},
+		"./client": "./src/client/index.js",
+		"./messages": "./src/messages/index.js",
+		"./middlewares": "./src/middlewares/index.js",
+		"./server": "./src/server/index.js",
+		"./test": {
+			"import": "./src/test/index.js",
+			"types": "./types/test/index.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "node --test --test-timeout 6000 \"src/**/*.test.js\" | nan0test parse --fail",
+		"test:docs": "node --test --test-timeout 6000 src/README.md.js",
+		"test:status": "nan0test status --hide-name",
+		"test:coverage": "node --test --test-timeout 6000 --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" \"src/**/*.test.js\"",
+		"prepare": "husky"
+	},
+	"keywords": [
+		"nano",
+		"nanoweb",
+		"nanoweb-http-node",
+		"http"
+	],
+	"files": [
+		"src",
+		"package.json",
+		"README.md"
+	],
+	"author": "ЯRаСлав YaRaSlove <support@yaro.page>",
+	"license": "ISC",
+	"devDependencies": {
+		"@nan0web/http": "workspace:*",
+		"@nan0web/test": "workspace:*",
+		"husky": "^9.1.7"
+	},
+	"peerDependencies": {
+		"@nan0web/http": "^1.0.0"
+	}
+}
