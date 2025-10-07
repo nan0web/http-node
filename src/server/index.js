@@ -1,3 +1,4 @@
+import Router from "./Router.js"
 import Server from "./Server.js"
 
 /**
@@ -11,6 +12,7 @@ function createServer(options) {
 
 export {
 	Server,
+	Router,
 	createServer
 }
 

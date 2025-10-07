@@ -1,12 +1,16 @@
+/** @typedef {import("../messages/IncomingMessage.js").default} IncomingMessage */
+/** @typedef {import("../messages/ServerResponse.js").default} ServerResponse */
+/** @typedef {import("../server/Server.js").MiddlewareFn} MiddlewareFn */
+
 /**
  * Body parser middleware.
- * @returns {(req: import('../messages/IncomingMessage.js').default, res: import('../messages/ResponseMessage.js').default, next: Function) => Promise<void>}
+ * @returns {MiddlewareFn}
  */
 function bodyParser() {
 	/**
 	 * Parses request body based on content-type
-	 * @param {import('../messages/IncomingMessage.js').default & import('node:events').EventEmitter} req
-	 * @param {import('../messages/ResponseMessage.js').default} res
+	 * @param {IncomingMessage & import('node:events').EventEmitter} req
+	 * @param {ServerResponse} res
 	 * @param {Function} next
 	 * @returns {Promise<void>}
 	 */
@@ -20,7 +24,13 @@ function bodyParser() {
 			req.on('data', (chunk) => body += chunk)
 			req.on('end', async () => {
 				try {
-					const contentType = req.headers?.get('content-type') || ''
+					let contentType = ''
+					if (req.headers?.get && typeof req.headers.get === 'function') {
+						// @ts-ignore
+						contentType = req.headers.get('content-type') || ''
+					} else if (req.headers && typeof req.headers === 'object') {
+						contentType = req.headers['content-type'] || ''
+					}
 
 					if (contentType.includes('application/json')) {
 						// @ts-ignore

@@ -1,7 +1,7 @@
 {
 	"name": "@nan0web/http-node",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Node.js HTTP client and server built on native modules with minimal dependencies.",
 	"main": "./src/index.js",
 	"types": "./types/index.d.ts",
 	"type": "module",
@@ -10,10 +10,22 @@
 			"import": "./src/index.js",
 			"types": "./types/index.d.ts"
 		},
-		"./client": "./src/client/index.js",
-		"./messages": "./src/messages/index.js",
-		"./middlewares": "./src/middlewares/index.js",
-		"./server": "./src/server/index.js",
+		"./client": {
+			"import": "./src/client/index.js",
+			"types": "./types/client/index.d.ts"
+		},
+		"./messages": {
+			"import": "./src/messages/index.js",
+			"types": "./types/messages/index.d.ts"
+		},
+		"./middlewares": {
+			"import": "./src/middlewares/index.js",
+			"types": "./types/middlewares/index.d.ts"
+		},
+		"./server": {
+			"import": "./src/server/index.js",
+			"types": "./types/server/index.d.ts"
+		},
 		"./test": {
 			"import": "./src/test/index.js",
 			"types": "./types/test/index.d.ts"
@@ -25,6 +37,7 @@
 		"test:docs": "node --test --test-timeout 6000 src/README.md.js",
 		"test:status": "nan0test status --hide-name",
 		"test:coverage": "node --test --test-timeout 6000 --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" \"src/**/*.test.js\"",
+		"playground": "node playground/main.js",
 		"prepare": "husky"
 	},
 	"keywords": [

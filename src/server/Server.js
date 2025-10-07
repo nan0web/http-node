@@ -44,7 +44,7 @@ export default class Server {
 	/**
 	 * @param {ServerOptions} options
 	 */
-	constructor(options) {
+	constructor(options = {}) {
 		const {
 			middlewares = [],
 			server = null,

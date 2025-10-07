@@ -3,6 +3,7 @@ node_modules/
 /test/certs/
 /llm/
 .llm/
+.datasets/
 llm.config.js
 chat/
 me.md

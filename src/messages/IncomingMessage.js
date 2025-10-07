@@ -16,8 +16,8 @@ class IncomingMessage extends HttpIncomingMessage {
 		// Explicitly set for test compatibility (parser sets in real usage)
 		this.method = options.method || this.method || 'GET'
 		this.url = options.url || this.url || '/'
-		if (options.headers && !this.headers) {
-			this.headers = options.headers
+		if (options.headers) {
+			Object.assign(this.headers, options.headers)
 		}
 	}
 

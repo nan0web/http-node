@@ -59,9 +59,9 @@ export type FetchOptions = {
  * Core fetch function
  * @param {string} url - The URL to fetch
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-declare function fetch(url: string, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+declare function fetch(url: string, options?: FetchOptions): Promise<ResponseMessage>;
 /**
  * APIRequest class for handling API requests with default options
  * @class
@@ -92,128 +92,92 @@ export class APIRequest {
      * Makes a GET request
      * @param {string} path - The API endpoint path
      * @param {Object} headers - Additional headers
-     * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+     * @returns {Promise<ResponseMessage>} The response
      */
-    get(path: string, headers?: any): Promise<SimpleResponse | ResponseMessage>;
+    get(path: string, headers?: any): Promise<ResponseMessage>;
     /**
      * Makes a POST request
      * @param {string} path - The API endpoint path
      * @param {Object|Buffer|ReadableStream} body - The request body
      * @param {Object} headers - Additional headers
-     * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+     * @returns {Promise<ResponseMessage>} The response
      */
-    post(path: string, body: any | Buffer | ReadableStream, headers?: any): Promise<SimpleResponse | ResponseMessage>;
+    post(path: string, body: any | Buffer | ReadableStream, headers?: any): Promise<ResponseMessage>;
     /**
      * Makes a PUT request
      * @param {string} path - The API endpoint path
      * @param {Object|Buffer|ReadableStream} body - The request body
      * @param {Record<string, string>} headers - Additional headers
-     * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+     * @returns {Promise<ResponseMessage>} The response
      */
-    put(path: string, body: any | Buffer | ReadableStream, headers?: Record<string, string>): Promise<SimpleResponse | ResponseMessage>;
+    put(path: string, body: any | Buffer | ReadableStream, headers?: Record<string, string>): Promise<ResponseMessage>;
     /**
      * Makes a PATCH request
      * @param {string} path - The API endpoint path
      * @param {Object|Buffer|ReadableStream} body - The request body
      * @param {Record<string, string>} headers - Additional headers
-     * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+     * @returns {Promise<ResponseMessage>} The response
      */
-    patch(path: string, body: any | Buffer | ReadableStream, headers?: Record<string, string>): Promise<SimpleResponse | ResponseMessage>;
+    patch(path: string, body: any | Buffer | ReadableStream, headers?: Record<string, string>): Promise<ResponseMessage>;
     /**
      * Makes a DELETE request
      * @param {string} path - The API endpoint path
      * @param {Record<string, string>} headers - Additional headers
-     * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+     * @returns {Promise<ResponseMessage>} The response
      */
-    del(path: string, headers?: Record<string, string>): Promise<SimpleResponse | ResponseMessage>;
+    del(path: string, headers?: Record<string, string>): Promise<ResponseMessage>;
 }
 /**
  * Makes a GET request
  * @param {string} url - The URL to fetch
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-export function get(url: string, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+export function get(url: string, options?: FetchOptions): Promise<ResponseMessage>;
 /**
  * Makes a POST request
  * @param {string} url - The URL to fetch
  * @param {Object|Buffer|ReadableStream} body - The request body
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-export function post(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+export function post(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
 /**
  * Makes a PUT request
  * @param {string} url - The URL to fetch
  * @param {Object|Buffer|ReadableStream} body - The request body
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-export function put(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+export function put(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
 /**
  * Makes a PATCH request
  * @param {string} url - The URL to fetch
  * @param {Object|Buffer|ReadableStream} body - The request body
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-export function patch(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+export function patch(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
 /**
  * Makes a DELETE request
  * @param {string} url - The URL to fetch
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-export function del(url: string, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+export function del(url: string, options?: FetchOptions): Promise<ResponseMessage>;
 /**
  * Makes a HEAD request
  * @param {string} url - The URL to fetch
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-export function head(url: string, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+export function head(url: string, options?: FetchOptions): Promise<ResponseMessage>;
 /**
  * Makes an OPTIONS request
  * @param {string} url - The URL to fetch
  * @param {FetchOptions} options - The fetch options
- * @returns {Promise<SimpleResponse|ResponseMessage>} The response
+ * @returns {Promise<ResponseMessage>} The response
  */
-export function options(url: string, options?: FetchOptions): Promise<SimpleResponse | ResponseMessage>;
+export function options(url: string, options?: FetchOptions): Promise<ResponseMessage>;
 import { Buffer } from 'node:buffer';
-/**
- * SimpleResponse mimics the interface expected by the test suite.
- *
- * @class
- * @param {Uint8Array|Buffer|string|any} body - The raw response body.
- * @param {Object} options
- * @param {number} options.status - HTTP status code.
- * @param {string} options.statusText - HTTP status text.
- * @param {Object} options.headers - Normalised response headers.
- * @param {string} options.url - Request URL.
- * @param {string} options.type - Response type (json, binary, sockets, …).
- */
-declare class SimpleResponse {
-    constructor(body: any, { status, statusText, headers, url, type }: {
-        status: any;
-        statusText: any;
-        headers: any;
-        url: any;
-        type: any;
-    });
-    _body: any;
-    status: any;
-    statusText: any;
-    headers: Map<string, any>;
-    url: any;
-    type: any;
-    ok: boolean;
-    /** @returns {Promise<any>} */
-    json(): Promise<any>;
-    /** @returns {Promise<string>} */
-    text(): Promise<string>;
-    /** @returns {Promise<Buffer>} */
-    buffer(): Promise<Buffer>;
-    /** @returns {any} – for sockets streaming */
-    stream(): any;
-}
 import ResponseMessage from '../messages/ResponseMessage.js';

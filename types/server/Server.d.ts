@@ -47,7 +47,7 @@ export default class Server {
     /**
      * @param {ServerOptions} options
      */
-    constructor(options: ServerOptions);
+    constructor(options?: ServerOptions);
     /** @type {string} */
     id: string;
     /** @type {Router} */

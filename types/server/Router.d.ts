@@ -1,6 +1,6 @@
 /** @typedef {import("./Server.js").MiddlewareFn} MiddlewareFn */
 /**
- * HTTP Router class
+ * HTTP Router class for managing routes and middleware
  */
 export default class Router {
     /** @type {Array<Function>} */

@@ -14,7 +14,6 @@ declare class IncomingMessage extends HttpIncomingMessage {
     params: {};
     method: any;
     url: any;
-    headers: any;
     /**
      * Implements Readable stream _read method
      */

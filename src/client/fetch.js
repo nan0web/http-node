@@ -345,7 +345,15 @@ class APIRequest {
 			throw new Error('baseUrl is not defined')
 		}
 		try {
-			return new URL(path, this.baseUrl).toString()
+			let resolvedBase = this.baseUrl
+			if (!resolvedBase.endsWith('/')) {
+				resolvedBase += '/'
+			}
+			let resolvedPath = path
+			if (resolvedPath.startsWith('/')) {
+				resolvedPath = resolvedPath.slice(1)
+			}
+			return new URL(resolvedPath, resolvedBase).toString()
 		} catch (/** @type {unknown} */ error) {
 			// @ts-ignore
 			throw new Error(`Invalid URL construction: ${error.message}`)

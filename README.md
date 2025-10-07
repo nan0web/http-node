@@ -1,278 +1,305 @@
-# Nanoweb HTTP Node
+# @nan0web/http-node
 
-Nanoweb HTTP Node is a powerful Node.js package that provides a modern, browser-like fetch API for making HTTP requests in Node.js environments. It includes server and client functionality with middleware support.
+This document is available in other languages:
+- [Ukrainian 🇺🇦](./docs/uk/README.md)
 
-## Features
+Node.js HTTP client and server built on native modules with minimal dependencies.
 
-- Browser-like fetch API with full support for GET, POST, PUT, DELETE, PATCH, HEAD, and OPTIONS methods
-- Custom Response class with methods like `.text()`, `.json()`, `.arrayBuffer()`, and `.stream()`
-- APIRequest class for simplified API interactions with default options
-- HTTP server with routing capabilities
-- Middleware support for request processing
-- Support for HTTP/1.1, HTTP/2, and HTTPS protocols
-- Automatic Content-Type header handling based on request body
-- Robust error handling for network and HTTP errors
-- Brute force protection middleware
-- Body parsing middleware for JSON and form data
+|[Status](https://github.com/nan0web/monorepo/blob/main/system.md#написання-сценаріїв)|Documentation|Test coverage|Features|Npm version|
+|---|---|---|---|---|
+ |🟢 `98.6%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/http-node/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/http-node/blob/main/docs/uk/README.md) |🟢 `93.4%` |✅ d.ts 📜 system.md 🕹️ playground |— |
+
+## Description
+
+The `@nan0web/http-node` package provides a lightweight, testable HTTP framework for Node.js.
+It includes:
+
+- **Client**: Fetch API compatible functions (`fetch`, `get`, `post`, etc.) with HTTP/2 support.
+- **Server**: Simple server creation (`createServer`) with routing and middleware.
+- **Messages**: Custom `IncomingMessage` and `ResponseMessage` for request/response handling.
+- **Middlewares**: Built-in parsers like `bodyParser` and rate limiting (`bruteForce`).
+- **Router**: Method-based routing with parameter extraction.
+
+Designed for monorepos and minimal setups, following nan0web philosophy: zero dependencies,
+full test coverage, and pure JavaScript with JSDoc typing.
 
 ## Installation
 
-Ensure you have Node.js installed, then install the package using npm:
-
+How to install with npm?
 ```bash
 npm install @nan0web/http-node
 ```
 
+How to install with pnpm?
+```bash
+pnpm add @nan0web/http-node
+```
+
+How to install with yarn?
+```bash
+yarn add @nan0web/http-node
+```
+
 ## Usage
 
-### Core Fetch API
+### Server Creation
 
-The core fetch function allows you to make HTTP requests similar to the browser Fetch API:
+Create and start a basic HTTP server with routes.
 
+How to create and start a basic HTTP server?
 ```js
-import fetch from '@nan0web/http-node'
-
-// Make a GET request
-const response = await fetch('http://localhost:3000/data')
-const data = await response.json()
-console.log(data)
-```
-
-### HTTP Method Helpers
-
-Convenience methods for common HTTP operations:
-
-```js
-import { get, post, put, patch, del, head, options } from '@nan0web/http-node'
-
-// GET request
-const getData = await get('http://localhost:3000/data')
-
-// POST request with JSON body
-const postData = await post('http://localhost:3000/api/data', { name: 'John' })
-
-// PUT request
-const putData = await put('http://localhost:3000/api/data/1', { status: 'active' })
-
-// PATCH request
-const patchData = await patch('http://localhost:3000/api/data/1', { partial: true })
-
-// DELETE request
-const deleteData = await del('http://localhost:3000/api/data/1')
-
-// HEAD request
-const headData = await head('http://localhost:3000/data')
-
-// OPTIONS request
-const optionsData = await options('http://localhost:3000/data')
-```
-
-### APIRequest Class
-
-Create an API client with base URL and default headers:
-
-```js
-import { APIRequest } from '@nan0web/http-node'
-
-// Create API instance with base URL and default headers
-const api = new APIRequest('http://localhost:3000/api/', {
-  'Authorization': 'Bearer token',
-  'X-Custom-Header': 'value'
+import { createServer, fetch } from "@nan0web/http-node"
+const server = createServer()
+server.get("/hello", (req, res) => {
+	res.json({ message: "Hello World" })
 })
 
-// Make requests using the API instance
-const dataResponse = await api.get('data')
-const createResponse = await api.post('data', { name: 'John' })
-const updateResponse = await api.put('data/1', { status: 'active' })
-const deleteResponse = await api.del('data/1')
-```
-
-### Response Handling
-
-Handle responses in various formats:
-
-```js
-import fetch from '@nan0web/http-node'
-
-const response = await fetch('http://localhost:3000/data')
-
-// Check response status
-console.log(response.ok, response.status, response.statusText)
-
-// Get response as text
-const text = await response.text()
-console.log(text)
-
-// Get response as JSON
-const json = await response.json()
-console.log(json)
-
-// Get response as Buffer (binary)
-const buffer = await response.buffer()
-console.log(buffer)
-
-// Get response as ArrayBuffer
-const arrayBuffer = await response.arrayBuffer()
-console.log(arrayBuffer)
-
-// Get raw stream for streaming responses
-const stream = response.stream()
-console.log(stream)
-```
-
-### HTTP Server
-
-Create and configure an HTTP server with routes:
-
-```js
-import { createServer } from '@nan0web/http-node'
-
-// Create server instance
-const server = createServer({ port: 3000 })
-
-// Add routes
-server.get('/hello', (req, res) => {
-  res.end('Hello World!')
-})
-
-server.post('/api/data', (req, res) => {
-  // req.body is automatically parsed based on Content-Type
-  res.json({ received: req.body })
-})
-
-server.get('/users/:id', (req, res) => {
-  res.json({ userId: req.params.id })
-})
-
-// Start server
 await server.listen()
-console.log('Server running on port 3000')
+const port = server.port
+const response = await fetch(`http://localhost:${port}/hello`)
+const data = await response.json()
+console.info(data)
+await server.close()
+
 ```
+### Adding Routes
 
-### Middleware Support
+Support for GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
 
-Add middleware to process requests before reaching routes:
-
+How to add routes for different HTTP methods?
 ```js
-import { createServer, middlewares } from '@nan0web/http-node'
+import { createServer, post } from "@nan0web/http-node"
+import { bodyParser } from "@nan0web/http-node/middlewares"
+const server = createServer()
+server.use(bodyParser())
 
-const server = createServer({ port: 3000 })
-
-// Add built-in body parser middleware
-server.use(middlewares.bodyParser())
-
-// Add brute force protection middleware
-server.use(middlewares.bruteForce({
-  windowMs: 60_000, // 1 minute
-  max: 100 // limit each IP to 100 requests per windowMs
-}))
-
-// Add custom middleware
-server.use(async (req, res, next) => {
-  console.log(`Request: ${req.method} ${req.url}`)
-  await next()
+server.post("/user", async (req, res) => {
+	const body = req.body || {}
+	res.statusCode = 201
+	res.json({ id: 1, ...body })
 })
+
+await server.listen()
+const port = server.port
+const response = await post(`http://localhost:${port}/user`, { name: "Alice" })
+const data = await response.json()
+console.info(data)
+await server.close()
+
 ```
 
-### Router Class
-
-Use the Router class for more complex routing:
-
+How to handle DELETE requests with 204 status?
 ```js
-import { Router } from '@nan0web/http-node'
+import { createServer, del } from "@nan0web/http-node"
+const server = createServer()
 
+server.delete("/user/:id", async (req, res) => {
+	const { id } = req.params
+	if (id === "1") {
+		res.writeHead(204, 'No Content')
+		res.end()
+	} else {
+		res.writeHead(404, 'Not Found')
+		res.end(JSON.stringify({ error: "Not found" }))
+	}
+})
+
+await server.listen()
+const port = server.port
+const response = await del(`http://localhost:${port}/user/1`)
+console.info(response.status)
+await server.close()
+
+```
+### Middleware Usage
+
+Apply global middleware like body parsing.
+
+How to use bodyParser middleware?
+```js
+import { createServer } from "@nan0web/http-node"
+import { bodyParser } from "@nan0web/http-node/middlewares"
+const server = createServer()
+
+server.use(bodyParser())
+server.post("/echo", async (req, res) => {
+	res.json(req.body)
+})
+
+await server.listen()
+const port = server.port
+const response = await post(`http://localhost:${port}/echo`, { key: "value" })
+const data = await response.json()
+console.info(data)
+await server.close()
+
+```
+
+How to use bruteForce rate limiting?
+```js
+import { createServer } from "@nan0web/http-node"
+import { bruteForce } from "@nan0web/http-node/middlewares"
+const server = createServer()
+
+server.use(bruteForce({ max: 1, windowMs: 1000 }))
+server.get("/protected", (req, res) => {
+	res.json({ message: "Protected" })
+})
+
+await server.listen()
+const port = server.port
+await get(`http://localhost:${port}/protected`) // First request OK
+const response = await get(`http://localhost:${port}/protected`) // Second blocked
+console.info(response.status)
+await server.close()
+
+```
+### Client Requests
+
+Use `fetch` or helpers like `get`, `post`.
+
+How to make a GET request with fetch?
+```js
+import { fetch, createServer } from "@nan0web/http-node"
+const server = createServer()
+
+server.get("/data", (req, res) => {
+	res.json({ result: "success" })
+})
+
+await server.listen()
+const port = server.port
+const response = await fetch(`http://localhost:${port}/data`, { timeout: 5000 })
+const data = await response.json()
+console.info(data)
+await server.close()
+
+```
+
+How to use APIRequest for base URL management?
+```js
+import { APIRequest, createServer } from "@nan0web/http-node"
+const server = createServer()
+
+server.get("/api/info", (req, res) => {
+	res.json({ version: "1.0" })
+})
+
+await server.listen()
+const port = server.port
+const baseUrl = `http://localhost:${port}/api`
+const api = new APIRequest(baseUrl)
+const response = await api.get("info")
+const data = await response.json()
+console.info(data)
+await server.close()
+
+```
+### Custom Messages
+
+Extend `IncomingMessage` and `ResponseMessage` for custom handling.
+You can import classes directly from a /messages.
+
+How to create a custom IncomingMessage?
+```js
+import { IncomingMessage } from "@nan0web/http-node/messages"
+const socket = { remoteAddress: "127.0.0.1" }
+const req = new IncomingMessage(socket, {
+	method: "POST",
+	url: "/custom",
+	headers: { "content-type": "application/json" }
+})
+
+console.info(req.method) // "POST"
+console.info(req.url) // "/custom"
+console.info(req.headers["content-type"] || '') // "application/json"
+```
+
+How to create a ResponseMessage with body?
+```js
+import { ResponseMessage } from "@nan0web/http-node/messages"
+const response = new ResponseMessage("Hello from custom response", {
+	status: 200,
+	statusText: "OK",
+	headers: { "content-type": "text/plain" }
+})
+
+const text = await response.text()
+console.info(text) // "Hello from custom response"
+```
+### Router Standalone
+
+Use `Router` independently for advanced routing.
+
+How to use Router for parameter extraction?
+```js
+import { Router } from "@nan0web/http-node/server"
 const router = new Router()
+let capturedParams = null
 
-router.get('/api/test', (req, res) => {
-  res.json({ message: 'test' })
+router.get("/user/:id", (req, res) => {
+	capturedParams = req.params.id
 })
 
-router.post('/api/submit', (req, res) => {
-  res.json({ submitted: req.body })
-})
+const req = { method: "GET", url: "/user/123" }
+const res = {}
+router.handle(req, res, () => { })
+
+console.info(capturedParams)
 ```
+## API
 
-### Error Handling
+### Client Functions
 
-Handle network and HTTP errors gracefully:
+- `fetch(url, options)` – Core fetch with options like `method`, `body`, `timeout`, `protocol: 'http2'`.
+- `get/post/put/patch/del/head/options(url, body?, options?)` – Convenience methods.
+- `APIRequest(baseUrl, defaults)` – Class for API clients with method chaining.
 
-```js
-import fetch from '@nan0web/http-node'
-
-try {
-  const response = await fetch('http://localhost:3000/invalid')
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`)
-  }
-  const data = await response.json()
-} catch (error) {
-  console.error('Fetch error:', error)
-}
-```
-
-## API Reference
-
-### fetch(url, options)
-
-Core fetch function that returns a ResponseMessage.
-
-**Options:**
-- `method`: HTTP method (default: 'GET')
-- `headers`: Request headers object
-- `body`: Request body (string, Buffer, or Object)
-- `type`: Response type ('json', 'binary', 'text', or 'sockets')
-- `protocol`: Protocol to use ('http', 'https', or 'http2')
-- `ALPNProtocols`: Array of ALPN protocols for HTTP/2
-- `rejectUnauthorized`: Whether to reject self-signed certificates
-- `timeout`: Request timeout in milliseconds
-- `logger`: Logger instance
-
-### APIRequest
-
-Class for creating API clients with default configuration.
-
-**Constructor:**
-```js
-new APIRequest(baseUrl, defaultHeaders, options)
-```
-
-**Methods:**
-- `get(path, headers)`: Make GET request
-- `post(path, body, headers)`: Make POST request
-- `put(path, body, headers)`: Make PUT request
-- `patch(path, body, headers)`: Make PATCH request
-- `del(path, headers)`: Make DELETE request
+**Options**: `method`, `headers`, `body`, `type` ('json'|'binary'|'sockets'), `protocol`, `timeout`, `rejectUnauthorized`.
 
 ### Server
 
-HTTP server class with routing and middleware support.
+- `createServer(options)` – Creates server instance.
+- `Server` class: `.use(middleware)`, `.get/post/put/delete/patch(head|options)(path, handler)`.
+- `.listen()` / `.close()` for lifecycle.
 
-**Constructor:**
-```js
-new Server(options)
-```
+### Router
 
-**Methods:**
-- `use(middleware)`: Add middleware
-- `get(path, handler)`: Add GET route
-- `post(path, handler)`: Add POST route
-- `put(path, handler)`: Add PUT route
-- `delete(path, handler)`: Add DELETE route
-- `patch(path, handler)`: Add PATCH route
-- `listen()`: Start server
-- `close()`: Stop server
+- `new Router()`: `.get/post/.../use(path|middleware)`.
+- `.handle(req, res, notFoundHandler)` – Processes request.
+- Supports params like `/user/:id` and wildcards `*`.
+
+### Messages
+
+- `IncomingMessage`: Extends Node's with `params`, `body`.
+- `ResponseMessage`: Readable stream with `json()`, `text()`, `buffer()`, `status`, `headers`.
+- `ServerResponse`: Extends Node's with `.json(data)`, route helpers.
 
 ### Middlewares
 
-Built-in middleware functions.
+- `Middlewares.bodyParser()` – Parses JSON/form bodies into `req.body`.
+- `Middlewares.bruteForce(options)` – Rate limits by IP/path (e.g., `{ max: 100, windowMs: 60000 }`).
 
-**bodyParser()**: Parses request body based on Content-Type
-**bruteForce(options)**: Protects against brute force attacks
+## Java•Script
+
+Uses `d.ts` files for autocompletion
+
+## CLI Playground
+
+How to run playground script?
+```bash
+# Clone the repository and run the CLI playground
+git clone https://github.com/nan0web/http-node.git
+cd http-node
+npm install
+# Run tests or custom playground if available
+npm run playground
+```
+
+## Contributing
+
+How to contribute? - [check here](./CONTRIBUTING.md)
 
 ## License
 
-ISC
-
-## Author
-
-ЯRаСлав YaRaSlove <support@yaro.page>
+How to license ISC? - [check here](./LICENSE)

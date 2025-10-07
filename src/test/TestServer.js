@@ -2,6 +2,7 @@ import { createServer } from '../server/index.js'
 import fetch from '../client/fetch.js'
 
 /** @typedef {import('../server/Server.js').MiddlewareFn} MiddlewareFn */
+/** @typedef {import("../messages/ResponseMessage.js").default} ResponseMessage */
 
 /**
  * TestServer для інтеграційних тестів: створює тимчасовий сервер з роутами.
@@ -80,7 +81,7 @@ export default class TestServer {
 	 * Make a request to the test server
 	 * @param {string} path - Request path
 	 * @param {Object} options - Fetch options
-	 * @returns {Promise<import('../client/fetch.js').SimpleResponse|import('../messages/ResponseMessage').default>} Response object
+	 * @returns {Promise<ResponseMessage>} Response object
 	 */
 	async request(path, options = {}) {
 		if (!this.baseUrl) throw new Error('Call start() first')
