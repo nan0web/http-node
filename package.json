@@ -48,6 +48,7 @@
 	],
 	"files": [
 		"src",
+		"types",
 		"package.json",
 		"README.md"
 	],

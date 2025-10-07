@@ -269,11 +269,11 @@ suite("Fetch", () => {
 		})
 	})
 
-	// Додано: тест для HTTP/2 (skip, бо складно з client, але базовий)
-	describe.skip("HTTP/2", () => {
+	describe("HTTP/2", () => {
 		it("uses HTTP/2 for https", async () => {
-			// Мок https server з h2, assert logs
-			// (деталі пропущено; використовуйте для future)
-		})
+			const res = await fetch(`${baseUrl}/json`, { type: "json", protocol: "http2", rejectUnauthorized: false });
+			assert.strictEqual(res.status, 200);
+			assert.deepStrictEqual(await res.json(), { message: 'Hello, World!' });
+		});
 	})
 })

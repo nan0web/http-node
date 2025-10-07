@@ -7,6 +7,9 @@ import fetch, {
 import IncomingMessage from './messages/IncomingMessage.js'
 import ResponseMessage from './messages/ResponseMessage.js'
 
+import mockFetch from './test/mockFetch.js'
+import TestServer from './test/TestServer.js'
+
 /**
  * Main exports for the nan0 web framework
  * Provides HTTP client functionality, server creation, routing, and middleware
@@ -23,6 +26,9 @@ export {
 	Router,
 	createServer,
 	Server,
+
+	mockFetch,
+	TestServer,
 }
 
 export default fetch
