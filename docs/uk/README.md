@@ -293,7 +293,7 @@ git clone https://github.com/nan0web/http-node.git
 cd http-node
 npm install
 # Запустити тести або власну пісочницю, якщо є
-npm run playground
+npm run play
 ```
 
 ## Участь у проєкті

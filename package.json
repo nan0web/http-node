@@ -5,6 +5,11 @@
 	"main": "./src/index.js",
 	"types": "./types/index.d.ts",
 	"type": "module",
+	"files": [
+		"src/**/*.js",
+		"!src/**/*.test.js",
+		"types/**/*.d.ts"
+	],
 	"exports": {
 		".": {
 			"import": "./src/index.js",
@@ -33,12 +38,19 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"test": "node --test --test-timeout 6000 \"src/**/*.test.js\" | nan0test parse --fail",
-		"test:docs": "node --test --test-timeout 6000 src/README.md.js",
-		"test:status": "nan0test status --hide-name",
-		"test:coverage": "node --test --test-timeout 6000 --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" \"src/**/*.test.js\"",
-		"playground": "node playground/main.js",
-		"prepare": "husky"
+		"test": "node --test \"src/**/*.test.js\"",
+		"test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+		"test:coverage:collect": "nan0test coverage",
+		"test:docs": "node --test src/README.md.js",
+		"test:release": "node --test \"releases/**/*.test.js\"",
+		"test:status": "nan0test status --hide-name --debug",
+		"play": "node play/main.js",
+		"precommit": "npm test",
+		"prepush": "npm test",
+		"prepare": "husky",
+		"release": "nan0release publish",
+		"clean": "rm -rf .cache/ && rm -rf dist/",
+		"clean:modules": "rm -rf node_modules"
 	},
 	"keywords": [
 		"nano",
@@ -46,17 +58,11 @@
 		"nanoweb-http-node",
 		"http"
 	],
-	"files": [
-		"src",
-		"types",
-		"package.json",
-		"README.md"
-	],
 	"author": "ЯRаСлав YaRaSlove <support@yaro.page>",
 	"license": "ISC",
 	"devDependencies": {
-		"@nan0web/http": "workspace:*",
-		"@nan0web/test": "workspace:*",
+		"@nan0web/http": "^1.0.0",
+		"@nan0web/test": "^1.0.2",
 		"husky": "^9.1.7"
 	},
 	"peerDependencies": {

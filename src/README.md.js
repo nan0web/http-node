@@ -403,10 +403,10 @@ function testRender() {
 		 * cd http-node
 		 * npm install
 		 * # Run tests or custom playground if available
-		 * npm run playground
+		 * npm run play
 		 * ```
 		 */
-		assert.ok(pkg.scripts?.playground)
+		assert.ok(pkg.scripts?.play)
 		const response = await runSpawn("git", ["remote", "get-url", "origin"], { timeout: 1000 })
 		assert.ok(response.code === 0 || response.code === 128, "git command may fail if not in repo")
 	})

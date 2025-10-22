@@ -293,7 +293,7 @@ git clone https://github.com/nan0web/http-node.git
 cd http-node
 npm install
 # Run tests or custom playground if available
-npm run playground
+npm run play
 ```
 
 ## Contributing
