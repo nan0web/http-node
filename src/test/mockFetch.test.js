@@ -113,6 +113,15 @@ describe('mockFetch', () => {
 		strictEqual(response.headers.get("Content-Type"), "text/html")
 	})
 
+	it("should handle absolute uris", async () => {
+		const fetch = mockFetch([
+			["GET https://api.example.com/index.json", { "some": "thing" }]
+		])
+		const response = await fetch("https://api.example.com/index.json")
+		strictEqual(response.ok, true)
+		deepStrictEqual(await response.json(), { some: "thing" })
+	})
+
 	describe("Route patterns", () => {
 		const routes = [
 			["GET /users", { get: "/users" }],

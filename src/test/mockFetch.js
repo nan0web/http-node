@@ -30,8 +30,9 @@ export default function mockFetch(routes) {
 			['Access-Control-Allow-Headers', options.headers?.['Content-Type'] || '*']
 		]
 		const method = options.method || 'GET'
-		const path = url.replace(/^(?:\/\/|[^/])*(\/.*)/, '$1')
-		const route = method + ' ' + path
+		const isAbsolute = /^(https?:)?\/\//.test(url)
+		const path = isAbsolute ? new URL(url).pathname : url.replace(/^(?:\/\/|[^/])*(\/.*)/, '$1')
+		const route = method + ' ' + (isAbsolute ? url : path)
 		for (const [pattern, response, head = []] of routes) {
 			const [m, u] = pattern.split(" ")
 			let match = pattern === route
