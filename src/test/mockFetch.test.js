@@ -94,7 +94,7 @@ describe('mockFetch', () => {
 
 	it('should handle function-based response returning structured response', async () => {
 		const routes = [
-			['GET /structured', async () => ({ ok: false, status: 418, data: { message: 'I am a teapot' } })],
+			['GET /structured', async () => [418, { message: 'I am a teapot' }]],
 		]
 		const fetch = mockFetch(routes)
 		const response = await fetch('/structured', { method: 'GET' })
@@ -115,11 +115,18 @@ describe('mockFetch', () => {
 
 	it("should handle absolute uris", async () => {
 		const fetch = mockFetch([
-			["GET https://api.example.com/index.json", { "some": "thing" }]
+			["GET https://api.example.com/index.json", { "some": "thing" }],
+			["GET http://example.com/i", [201, ["list", "of", 5, "items"]]]
 		])
-		const response = await fetch("https://api.example.com/index.json")
-		strictEqual(response.ok, true)
-		deepStrictEqual(await response.json(), { some: "thing" })
+		const r1 = await fetch("https://api.example.com/index.json")
+		strictEqual(r1.ok, true)
+		deepStrictEqual(await r1.json(), { some: "thing" })
+		const r2 = await fetch("http://example.com/i")
+		strictEqual(r2.ok, true)
+		strictEqual(r2.status, 201)
+		const json = await r2.json()
+		deepStrictEqual(json, ["list", "of", 5, "items"])
+		strictEqual(Array.isArray(json), true)
 	})
 
 	describe("Route patterns", () => {

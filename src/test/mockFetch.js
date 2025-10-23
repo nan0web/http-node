@@ -68,7 +68,8 @@ export default function mockFetch(routes) {
 				}
 			}
 			if (match) {
-				let [status, data] = Array.isArray(response) ? response : [200, response]
+				const r = "function" === typeof response ? await response(options) : response
+				let [status, data] = Array.isArray(r) ? r : [200, r]
 				let ok = status >= 200 && status < 300
 				const headers = new Map([...corsHeaders, ...head])
 				if ("function" === typeof data) {
