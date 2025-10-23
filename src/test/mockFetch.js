@@ -9,6 +9,7 @@
 /**
  * Creates a mock fetch function based on the provided routes.
  * @param {Array<[string, (Object|Array|Function)]>} routes - Route patterns with their corresponding responses.
+ * @param {string} [base=""] - The URI prefix, such as host "http://localhost"
  * @returns {(url: string, options: object) => Promise<MockFetchResponse>} An async function that mimics the fetch API.
  *
  * @example
@@ -22,7 +23,7 @@
  * const response = await fetch('/users');
  * const data = await response.json();
  */
-export default function mockFetch(routes) {
+export default function mockFetch(routes, base = "") {
 	return async (url, options = {}) => {
 		const corsHeaders = [
 			['Access-Control-Allow-Origin', '*'],
@@ -30,11 +31,13 @@ export default function mockFetch(routes) {
 			['Access-Control-Allow-Headers', options.headers?.['Content-Type'] || '*']
 		]
 		const method = options.method || 'GET'
-		const isAbsolute = /^(https?:)?\/\//.test(url)
+		const isAbsolute = url.split("://").length > 1
 		const path = isAbsolute ? new URL(url).pathname : url.replace(/^(?:\/\/|[^/])*(\/.*)/, '$1')
 		const route = method + ' ' + (isAbsolute ? url : path)
-		for (const [pattern, response, head = []] of routes) {
-			const [m, u] = pattern.split(" ")
+		for (let [pattern, response, head = []] of routes) {
+			let [m, u] = pattern.split(" ")
+			u = undefined === u ? u : base + u
+			pattern = [m, u].join(" ")
 			let match = pattern === route
 			if (!match) {
 				if (pattern.includes("*")) {

@@ -129,6 +129,23 @@ describe('mockFetch', () => {
 		strictEqual(Array.isArray(json), true)
 	})
 
+
+	it("should handle absolute uris with base", async () => {
+		const fetch = mockFetch([
+			["GET /index.json", { "some": "thing" }],
+			["GET /i", [201, ["list", "of", 5, "items"]]]
+		], "https://example.com")
+		const r1 = await fetch("https://example.com/index.json")
+		strictEqual(r1.ok, true)
+		deepStrictEqual(await r1.json(), { some: "thing" })
+		const r2 = await fetch("https://example.com/i")
+		strictEqual(r2.ok, true)
+		strictEqual(r2.status, 201)
+		const json = await r2.json()
+		deepStrictEqual(json, ["list", "of", 5, "items"])
+		strictEqual(Array.isArray(json), true)
+	})
+
 	describe("Route patterns", () => {
 		const routes = [
 			["GET /users", { get: "/users" }],

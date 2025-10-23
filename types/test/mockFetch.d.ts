@@ -9,6 +9,7 @@
 /**
  * Creates a mock fetch function based on the provided routes.
  * @param {Array<[string, (Object|Array|Function)]>} routes - Route patterns with their corresponding responses.
+ * @param {string} [base=""] - The URI prefix, such as host "http://localhost"
  * @returns {(url: string, options: object) => Promise<MockFetchResponse>} An async function that mimics the fetch API.
  *
  * @example
@@ -22,7 +23,7 @@
  * const response = await fetch('/users');
  * const data = await response.json();
  */
-export default function mockFetch(routes: Array<[string, (any | any[] | Function)]>): (url: string, options: object) => Promise<MockFetchResponse>;
+export default function mockFetch(routes: Array<[string, (any | any[] | Function)]>, base?: string | undefined): (url: string, options: object) => Promise<MockFetchResponse>;
 export type MockFetchResponse = {
     ok: boolean;
     status: number;

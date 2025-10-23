@@ -7,7 +7,7 @@ Node.js HTTP client and server built on native modules with minimal dependencies
 
 |[Status](https://github.com/nan0web/monorepo/blob/main/system.md#написання-сценаріїв)|Documentation|Test coverage|Features|Npm version|
 |---|---|---|---|---|
- |🟢 `98.6%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/http-node/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/http-node/blob/main/docs/uk/README.md) |🟢 `93.4%` |✅ d.ts 📜 system.md 🕹️ playground |— |
+ |🟢 `98.7%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/http-node/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/http-node/blob/main/docs/uk/README.md) |🟢 `92.8%` |✅ d.ts 📜 system.md 🕹️ playground |1.0.1 |
 
 ## Description
 
