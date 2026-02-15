@@ -1,0 +1,25 @@
+[
+	{
+		"type": "signup",
+		"username": "carol",
+		"password": "mypass",
+		"email": "carol@test.com",
+		"label": "Step 1: Signup carol"
+	},
+	{ "type": "verify", "username": "carol", "label": "Step 1b: Verify carol" },
+	{ "type": "login", "username": "carol", "password": "mypass", "label": "Step 2: Login carol" },
+	{ "type": "head_private", "path": "check.json", "label": "Step 3: HEAD check (authenticated)" },
+	{
+		"type": "post_private",
+		"path": "notes.json",
+		"body": { "text": "Hello World" },
+		"label": "Step 4: Create resource"
+	},
+	{ "type": "get_private", "path": "notes.json", "label": "Step 5: Read created resource" },
+	{ "type": "logout", "username": "carol", "label": "Step 6: Logout" },
+	{
+		"type": "head_private",
+		"path": "notes.json",
+		"label": "Step 7: HEAD after logout (expect 401)"
+	}
+]

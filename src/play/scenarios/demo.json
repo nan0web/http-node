@@ -1,0 +1,20 @@
+[
+	{
+		"type": "signup",
+		"username": "alice",
+		"password": "password123",
+		"email": "alice@example.com",
+		"label": "Step 1: Signup"
+	},
+	{ "type": "verify", "username": "alice", "label": "Step 1b: Verify Account" },
+	{ "type": "login", "username": "alice", "password": "password123", "label": "Step 2: Login" },
+	{
+		"type": "post_private",
+		"path": "secret.json",
+		"body": { "content": "Top Secret" },
+		"label": "Step 3: Create Resource"
+	},
+	{ "type": "get_private", "path": "secret.json", "label": "Step 4: Read Resource" },
+	{ "type": "logout", "username": "alice", "label": "Step 5: Logout" },
+	{ "type": "get_private", "path": "secret.json", "label": "Step 6: Fail Access (Expected 401)" }
+]

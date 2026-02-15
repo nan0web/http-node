@@ -1,71 +1,50 @@
 {
-	"name": "@nan0web/http-node",
+	"name": "@nan0web/auth-node",
 	"version": "1.0.1",
-	"description": "Node.js HTTP client and server built on native modules with minimal dependencies.",
-	"main": "./src/index.js",
-	"types": "./types/index.d.ts",
+	"description": "Authorization node.js server for nan0web",
+	"main": "src/index.js",
 	"type": "module",
-	"files": [
-		"src/**/*.js",
-		"!src/**/*.test.js",
-		"types/**/*.d.ts"
-	],
-	"exports": {
-		".": {
-			"import": "./src/index.js",
-			"types": "./types/index.d.ts"
-		},
-		"./client": {
-			"import": "./src/client/index.js",
-			"types": "./types/client/index.d.ts"
-		},
-		"./messages": {
-			"import": "./src/messages/index.js",
-			"types": "./types/messages/index.d.ts"
-		},
-		"./middlewares": {
-			"import": "./src/middlewares/index.js",
-			"types": "./types/middlewares/index.d.ts"
-		},
-		"./server": {
-			"import": "./src/server/index.js",
-			"types": "./types/server/index.d.ts"
-		},
-		"./test": {
-			"import": "./src/test/index.js",
-			"types": "./types/test/index.d.ts"
-		}
+	"bin": {
+		"nan0auth": "bin/auth-server.js"
 	},
 	"scripts": {
+		"test": "node --test --test-force-exit --test-timeout=15000 \"src/**/*.test.js\"",
+		"test:all": "npm run test && npm run test:docs && npm run build && npm run knip && npm run audit",
+		"play": "node bin/auth-play.js",
+		"start": "node bin/auth-server.js",
 		"build": "tsc",
-		"test": "node --test \"src/**/*.test.js\"",
+		"knip": "pnpm dlx knip --production",
+		"audit": "pnpm audit --prod --audit-level=moderate",
+		"clean": "rm -rf .cache/ && rm -rf dist/",
+		"clean:modules": "rm -rf node_modules",
+		"test:docs": "node --test --test-force-exit --test-timeout=3333 src/README.md.js",
+		"test:release": "node --test \"releases/**/*.test.js\"",
 		"test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
 		"test:coverage:collect": "nan0test coverage",
-		"test:docs": "node --test src/README.md.js",
-		"test:release": "node --test \"releases/**/*.test.js\"",
-		"test:status": "nan0test status --hide-name --debug",
-		"play": "node play/main.js",
+		"test:status": "nan0test status",
 		"precommit": "npm test",
 		"prepush": "npm test",
 		"prepare": "husky",
-		"release": "nan0release publish",
-		"clean": "rm -rf .cache/ && rm -rf dist/",
-		"clean:modules": "rm -rf node_modules"
+		"playground": "node playground/main.js"
 	},
-	"keywords": [
-		"nano",
-		"nanoweb",
-		"nanoweb-http-node",
-		"http"
-	],
-	"author": "ЯRаСлав YaRaSlove <support@yaro.page>",
+	"keywords": [],
+	"author": "ЯRаСлав YaRaSLove <support@yaro.page>",
 	"license": "ISC",
+	"packageManager": "pnpm@10.11.0",
 	"devDependencies": {
-		"@nan0web/http": "^1.0.0",
-		"@nan0web/test": "^1.0.2",
+		"@nan0web/auth-core": "^1.0.0",
+		"@nan0web/db": "^1.2.2",
+		"@nan0web/db-fs": "^1.1.1",
+		"@nan0web/http": "^1.0.1",
+		"@nan0web/http-node": "^1.0.1",
+		"@nan0web/log": "^1.1.1",
+		"@nan0web/test": "^1.1.3",
 		"husky": "^9.1.7"
 	},
 	"peerDependencies": {
-		"@nan0web/http": "^1.0.0"
+		"@nan0web/db": "^1.0.0",
+		"@nan0web/db-fs": "^1.0.0",
+		"@nan0web/http": "^1.0.0",
+		"@nan0web/log": "^1.0.0"
 	}
 }

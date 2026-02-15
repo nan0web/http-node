@@ -15,6 +15,6 @@ trim_trailing_whitespace = false
 indent_style = tab
 indent_size = 2
 
-[*.{md,nano,yaml}]
+[*.{nano,yaml}]
 indent_style = space
 indent_size = 2

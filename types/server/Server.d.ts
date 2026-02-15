@@ -11,7 +11,7 @@ export function setDebugHeader(res: ServerResponse, serverId: string): void;
  * @param {import('../messages/IncomingMessage.js').default} req
  * @param {import('../messages/ServerResponse.js').default} res
  */
-export function prepareDeleteResponse(req: import('../messages/IncomingMessage.js').default, res: import('../messages/ServerResponse.js').default): void;
+export function prepareDeleteResponse(req: any, res: any): void;
 /**
  * Run middlewares, then invoke the supplied final handler.
  * @param {import('../messages/IncomingMessage.js').default} req
@@ -19,13 +19,13 @@ export function prepareDeleteResponse(req: import('../messages/IncomingMessage.j
  * @param {Array<MiddlewareFn>} middlewares
  * @param {Function} finalHandler
  */
-export function runMiddlewares(req: import('../messages/IncomingMessage.js').default, res: import('../messages/ServerResponse.js').default, middlewares: Array<MiddlewareFn>, finalHandler: Function): Promise<void>;
+export function runMiddlewares(req: any, res: any, middlewares: Array<MiddlewareFn>, finalHandler: Function): Promise<void>;
 /**
  * Generic error handling for request processing.
  * @param {any} err
  * @param {import('../messages/ServerResponse.js').default} res
  */
-export function handleError(err: any, res: import('../messages/ServerResponse.js').default): Promise<void>;
+export function handleError(err: any, res: any): Promise<void>;
 /** @typedef {(req: IncomingMessage, res: ServerResponse, next: () => Promise<void>) => Promise<void>} MiddlewareFn */
 /**
  * @typedef {Object} ServerOptions
@@ -136,7 +136,4 @@ export type ServerOptions = {
     logger?: Console | undefined;
     ssl?: any | undefined;
 };
-import ServerResponse from '../messages/ServerResponse.js';
-import Router from './Router.js';
 import { Server as HttpServer } from 'node:http';
-import IncomingMessage from '../messages/IncomingMessage.js';

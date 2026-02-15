@@ -1,0 +1,7 @@
+{
+	"$schema": "https://unpkg.com/knip@latest/schema.json",
+	"entry": ["src/index.js", "bin/auth-server.js", "bin/auth-play.js", "playground/main.js"],
+	"project": ["src/**/*.js", "bin/**/*.js", "playground/**/*.js"],
+	"ignore": ["types/**"],
+	"ignoreDependencies": ["husky"]
+}

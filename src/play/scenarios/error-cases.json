@@ -1,0 +1,40 @@
+[
+	{
+		"type": "signup",
+		"username": "bob",
+		"password": "secret",
+		"email": "bob@test.com",
+		"label": "Step 1: Signup bob"
+	},
+	{
+		"type": "get_private",
+		"path": "secret.json",
+		"label": "Step 2: Access private without token (expect 401)"
+	},
+	{ "type": "verify", "username": "bob", "label": "Step 3: Verify bob" },
+	{
+		"type": "signup",
+		"username": "bob",
+		"password": "secret",
+		"email": "bob@test.com",
+		"label": "Step 4: Duplicate signup (expect error)"
+	},
+	{
+		"type": "login",
+		"username": "bob",
+		"password": "wrong-password",
+		"label": "Step 5: Login with wrong password (expect 401)"
+	},
+	{ "type": "login", "username": "bob", "password": "secret", "label": "Step 6: Login correctly" },
+	{
+		"type": "get_private",
+		"path": "nonexistent.json",
+		"label": "Step 7: Access non-existent resource"
+	},
+	{ "type": "logout", "username": "bob", "label": "Step 8: Logout" },
+	{
+		"type": "get_private",
+		"path": "secret.json",
+		"label": "Step 9: Access after logout (expect 401)"
+	}
+]

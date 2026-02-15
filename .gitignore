@@ -1,9 +1,8 @@
-node_modules/
-/dist
-/test/certs/
-/llm/
-.llm/
-.datasets/
-llm.config.js
 chat/
+legacy/
+node_modules/
+test-auth-data/
 me.md
+play-data/
+auth-data/
+test-play-data/
