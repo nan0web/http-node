@@ -99,23 +99,24 @@ function testRender() {
 		 * })
 		 *
 		 * await server.start()
-		 * console.log('Server started on port:', server.port)
+		 * console.info('Server started on port:', server.port)
+		 * // Server started on port: 4320
 		 *
 		 * // Graceful shutdown
 		 * await server.stop()
 		 * ```
 		 */
-		// Execution check:
+		assert.ok(AuthServer)
 		const server = new AuthServer({
 			db: { cwd: './test-unused' },
 			port: 4320,
 			logger: new Logger(),
 		})
 		await server.start()
-		console.log('Server started on port:', server.port)
+		console.info('Server started on port:', server.port)
 		await server.stop()
 
-		assert.deepStrictEqual(console.output(), [['log', 'Server started on port:', 4320]])
+		assert.deepStrictEqual(console.output(), [['info', 'Server started on port:', 4320]])
 		assert.ok(server)
 	})
 
@@ -129,9 +130,9 @@ function testRender() {
 	 *
 	 * ### POST /auth/signup — Register
 	 *
-	 * Creates a new user account. The user must verify their email before logging in.
+	 * The user must verify their email before logging in.
 	 */
-	it('POST /auth/signup — register new user', async () => {
+	it('How to create a new user account?', async () => {
 		/**
 		 * ```bash
 		 * curl -X POST http://localhost:3000/auth/signup \
@@ -150,6 +151,7 @@ function testRender() {
 		 * | `400`  | Missing required fields |
 		 * | `409`  | User already exists |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/signup`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -167,7 +169,7 @@ function testRender() {
 	 * Confirms user registration with the 6-digit code.
 	 * Returns token pair on success.
 	 */
-	it('PUT /auth/signup/:username — verify account', async () => {
+	it('How to verify user account?', async () => {
 		/**
 		 * ```bash
 		 * curl -X PUT http://localhost:3000/auth/signup/alice \
@@ -187,22 +189,18 @@ function testRender() {
 		 * | `401`  | Invalid code |
 		 * | `404`  | User not found |
 		 */
-		// Read code from DB directly (simulating email reception)
+		assert.ok(api)
 		const dbUser = await api.db.getUser(user.username)
 		const code = dbUser.verificationCode
-
 		const res = await fetch(`${url}/auth/signup/${user.username}`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ code }),
 		})
 		const body = await res.json()
-
 		assert.equal(res.status, 200)
 		assert.ok(body.accessToken)
 		assert.ok(body.refreshToken)
-
-		// Store for next tests
 		accessToken = body.accessToken
 		refreshToken = body.refreshToken
 	})
@@ -213,7 +211,7 @@ function testRender() {
 	 *
 	 * Authenticate with username and password. Account must be verified first.
 	 */
-	it('POST /auth/signin/:username — login', async () => {
+	it('How to login with password?', async () => {
 		/**
 		 * ```bash
 		 * curl -X POST http://localhost:3000/auth/signin/alice \
@@ -233,6 +231,7 @@ function testRender() {
 		 * | `403`  | Account not verified |
 		 * | `404`  | User not found |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/signin/${user.username}`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -251,7 +250,7 @@ function testRender() {
 	 * Exchange a valid refresh token for a new token pair.
 	 * Pass `{ "replace": true }` to invalidate the old refresh token.
 	 */
-	it('PUT /auth/refresh/:token — refresh tokens', async () => {
+	it('How to refresh access tokens?', async () => {
 		/**
 		 * ```bash
 		 * curl -X PUT http://localhost:3000/auth/refresh/YOUR_REFRESH_TOKEN \
@@ -269,18 +268,16 @@ function testRender() {
 		 * | `200`  | New tokens issued |
 		 * | `401`  | Invalid or expired refresh token |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/refresh/${refreshToken}`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ replace: true }),
 		})
 		const body = await res.json()
-		assert.equal(res.status, 200, 'Refresh failed')
+		assert.equal(res.status, 200)
 		assert.ok(body.accessToken)
-		assert.ok(body.refreshToken)
 		assert.notEqual(accessToken, body.accessToken)
-
-		// Update tokens
 		accessToken = body.accessToken
 		refreshToken = body.refreshToken
 	})
@@ -293,7 +290,7 @@ function testRender() {
 	 *
 	 * Sends a 6-digit reset code to the user (via email in production).
 	 */
-	it('POST /auth/forgot/:username — request reset code', async () => {
+	it('How to request password reset?', async () => {
 		/**
 		 * ```bash
 		 * curl -X POST http://localhost:3000/auth/forgot/alice
@@ -309,6 +306,7 @@ function testRender() {
 		 * | `200`  | Reset code generated |
 		 * | `404`  | User not found |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/forgot/${user.username}`, { method: 'POST' })
 		const body = await res.json()
 		assert.equal(res.status, 200)
@@ -322,7 +320,7 @@ function testRender() {
 	 * Set a new password using the reset code.
 	 * All previous tokens are invalidated.
 	 */
-	it('PUT /auth/forgot/:username — reset password', async () => {
+	it('How to reset password with code?', async () => {
 		/**
 		 * ```bash
 		 * curl -X PUT http://localhost:3000/auth/forgot/alice \
@@ -341,9 +339,9 @@ function testRender() {
 		 * | `401`  | Invalid reset code |
 		 * | `404`  | User not found |
 		 */
+		assert.ok(api)
 		const dbUser = await api.db.getUser(user.username)
 		const code = dbUser.resetCode
-
 		const res = await fetch(`${url}/auth/forgot/${user.username}`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
@@ -352,8 +350,6 @@ function testRender() {
 		const body = await res.json()
 		assert.equal(res.status, 200)
 		assert.ok(body.accessToken)
-
-		// Update tokens as old ones are invalidated
 		accessToken = body.accessToken
 		refreshToken = body.refreshToken
 	})
@@ -367,7 +363,7 @@ function testRender() {
 	 * Returns user profile. Visibility depends on the requester's role.
 	 * Requires `Authorization: Bearer <token>`.
 	 */
-	it('GET /auth/signin/:username — get user info', async () => {
+	it('How to get user profile info?', async () => {
 		/**
 		 * ```bash
 		 * curl http://localhost:3000/auth/signin/alice \
@@ -385,6 +381,7 @@ function testRender() {
 		 * | Admin       | All except password, codes |
 		 * | Other user  | name, email, createdAt |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/signin/${user.username}`, {
 			headers: { Authorization: `Bearer ${accessToken}` },
 		})
@@ -392,7 +389,6 @@ function testRender() {
 		assert.equal(res.status, 200)
 		assert.equal(body.name, user.username)
 		assert.equal(body.email, user.email)
-		// ensure no private fields
 		assert.equal(body.passwordHash, undefined)
 	})
 
@@ -402,7 +398,7 @@ function testRender() {
 	 *
 	 * Returns a list of all registered usernames. Admin role required.
 	 */
-	it('GET /auth/info — list users (admin only)', async () => {
+	it('How to list all users as admin?', async () => {
 		/**
 		 * ```bash
 		 * curl http://localhost:3000/auth/info \
@@ -419,14 +415,11 @@ function testRender() {
 		 * | `200`  | User list returned |
 		 * | `403`  | Not admin |
 		 */
-		// Regular user should fail
-		const resFail = await fetch(`${url}/auth/info`, {
+		assert.ok(api)
+		const res = await fetch(`${url}/auth/info`, {
 			headers: { Authorization: `Bearer ${accessToken}` },
 		})
-		assert.equal(resFail.status, 403)
-
-		// To pass this test as admin, we'd need an admin token.
-		// For now we assert the endpoint is protected.
+		assert.equal(res.status, 403)
 	})
 
 	/**
@@ -435,7 +428,7 @@ function testRender() {
 	 *
 	 * Returns the current user's permissions: personal rules, group rules, and global rules.
 	 */
-	it('GET /auth/access/info — get access rules', async () => {
+	it('How to get access control rules?', async () => {
 		/**
 		 * ```bash
 		 * curl http://localhost:3000/auth/access/info \
@@ -452,6 +445,7 @@ function testRender() {
 		 * | `200`  | Access rules returned |
 		 * | `401`  | Not authenticated |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/access/info`, {
 			headers: { Authorization: `Bearer ${accessToken}` },
 		})
@@ -471,7 +465,7 @@ function testRender() {
 	 *
 	 * ### POST /private/:path — Create/Update Resource
 	 */
-	it('POST /private/:path — write private resource', async () => {
+	it('How to write a private resource?', async () => {
 		/**
 		 * ```bash
 		 * curl -X POST http://localhost:3000/private/notes.json \
@@ -486,10 +480,7 @@ function testRender() {
 		 * | `401`  | Not authenticated |
 		 * | `403`  | No write permission |
 		 */
-		// First grant access (simulating .access file or default permissions if any)
-		// By default AccessControl might block, but let's try.
-		// If 403, it proves protection works. To test success, we'd need to mock access control.
-		// For docs consistency, we'll assert it responds (protected).
+		assert.ok(api)
 		const res = await fetch(`${url}/private/notes.json`, {
 			method: 'POST',
 			headers: {
@@ -498,8 +489,6 @@ function testRender() {
 			},
 			body: JSON.stringify({ title: 'My Note' }),
 		})
-		// Without explicit grant, this should be 403 or 201 depending on config.
-		// Let's assert it handles the request (status < 500)
 		assert.ok(res.status < 500)
 	})
 
@@ -507,7 +496,7 @@ function testRender() {
 	 * @docs
 	 * ### GET /private/:path — Read Resource
 	 */
-	it('GET /private/:path — read private resource', async () => {
+	it('How to read a private resource?', async () => {
 		/**
 		 * ```bash
 		 * curl http://localhost:3000/private/notes.json \
@@ -521,10 +510,10 @@ function testRender() {
 		 * | `403`  | No read permission |
 		 * | `404`  | Resource not found |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/private/notes.json`, {
 			headers: { Authorization: `Bearer ${accessToken}` },
 		})
-		// Should handle request
 		assert.ok(res.status < 500)
 	})
 
@@ -532,7 +521,7 @@ function testRender() {
 	 * @docs
 	 * ### HEAD /private/:path — Check Resource Exists
 	 */
-	it('HEAD /private/:path — check resource exists', async () => {
+	it('How to check if private resource exists?', async () => {
 		/**
 		 * ```bash
 		 * curl -I http://localhost:3000/private/notes.json \
@@ -546,6 +535,7 @@ function testRender() {
 		 * | `403`  | No read permission |
 		 * | `404`  | Not found |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/private/notes.json`, {
 			method: 'HEAD',
 			headers: { Authorization: `Bearer ${accessToken}` },
@@ -557,7 +547,7 @@ function testRender() {
 	 * @docs
 	 * ### DELETE /private/:path — Delete Resource
 	 */
-	it('DELETE /private/:path — delete private resource', async () => {
+	it('How to delete a private resource?', async () => {
 		/**
 		 * ```bash
 		 * curl -X DELETE http://localhost:3000/private/notes.json \
@@ -571,6 +561,7 @@ function testRender() {
 		 * | `403`  | No delete permission |
 		 * | `404`  | Resource not found |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/private/notes.json`, {
 			method: 'DELETE',
 			headers: { Authorization: `Bearer ${accessToken}` },
@@ -585,7 +576,7 @@ function testRender() {
 	 * Invalidates all tokens for the authenticated user.
 	 * Requires `Authorization: Bearer <token>` header.
 	 */
-	it('DELETE /auth/signin/:username — logout', async () => {
+	it('How to logout user?', async () => {
 		/**
 		 * ```bash
 		 * curl -X DELETE http://localhost:3000/auth/signin/alice \
@@ -604,14 +595,12 @@ function testRender() {
 		 * | `403`  | Not authorized (if trying to logout someone else) |
 		 * | `404`  | User not found |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/signin/${user.username}`, {
 			method: 'DELETE',
 			headers: { Authorization: `Bearer ${accessToken}` },
 		})
 		const body = await res.json()
-		if (res.status !== 200) {
-			process.stdout.write(`LOGOUT ERROR: ${res.status} ${JSON.stringify(body)}\n`)
-		}
 		assert.equal(res.status, 200)
 		assert.equal(body.message, 'Logged out successfully')
 	})
@@ -622,7 +611,7 @@ function testRender() {
 	 *
 	 * Permanently deletes the user account and all associated tokens.
 	 */
-	it('DELETE /auth/signup/:username — delete account', async () => {
+	it('How to delete user account?', async () => {
 		/**
 		 * ```bash
 		 * curl -X DELETE http://localhost:3000/auth/signup/alice
@@ -638,11 +627,9 @@ function testRender() {
 		 * | `200`  | Account deleted |
 		 * | `404`  | User not found |
 		 */
+		assert.ok(api)
 		const res = await fetch(`${url}/auth/signup/${user.username}`, { method: 'DELETE' })
 		const body = await res.json()
-		if (res.status !== 200) {
-			process.stdout.write(`DELETE ACCOUNT ERROR: ${res.status} ${JSON.stringify(body)}\n`)
-		}
 		assert.equal(res.status, 200)
 		assert.equal(body.message, 'Account deleted')
 	})
@@ -679,13 +666,7 @@ function testRender() {
 	 * │          │ < ── { "Logged out" }          │          │
 	 * └──────────┘                                └──────────┘
 	 * ```
-	 */
-	it('Authentication flow diagram', () => {
-		assert.ok(true)
-	})
-
-	/**
-	 * @docs
+	 *
 	 * ## CLI
 	 *
 	 * Run the auth server directly:
@@ -694,7 +675,7 @@ function testRender() {
 	 * npx nan0auth
 	 * ```
 	 */
-	it('CLI command exists', () => {
+	it('How to run auth server from CLI?', () => {
 		assert.ok(pkg.bin?.nan0auth)
 	})
 
@@ -715,11 +696,31 @@ function testRender() {
 	 * | `demo`        | Full flow: signup → verify → login → private resources → logout |
 	 * | `error-cases` | Duplicate signup, wrong password, unauthorized access |
 	 * | `token-flow`  | Token refresh, HEAD checks, resource lifecycle |
-	 *
-	 * In playground mode, verification codes are automatically read from the database.
 	 */
-	it('Playground script exists', () => {
+	it('In playground mode, verification codes are automatically read from the database.', () => {
 		assert.ok(pkg.scripts?.play)
+	})
+
+	/**
+	 * @docs
+	 * ## Contributing
+	 */
+	it('How to contribute? - [check here]($pkgURL/blob/main/CONTRIBUTING.md)', async () => {
+		assert.ok(pkg.scripts?.test)
+		assert.equal(pkg.scripts?.precommit, 'npm test')
+		assert.equal(pkg.scripts?.prepare, 'husky')
+		const text = await fs.loadDocument('CONTRIBUTING.md')
+		assert.ok(String(text).includes('# Contributing'))
+	})
+
+	/**
+	 * @docs
+	 * ## License
+	 */
+	it('How to license? - [ISC LICENSE]($pkgURL/blob/main/LICENSE) file.', async () => {
+		/** @docs */
+		const text = await fs.loadDocument('LICENSE')
+		assert.ok(String(text).includes('ISC'))
 	})
 }
 
@@ -729,7 +730,8 @@ describe('Rendering README.md', async () => {
 	let text = ''
 	const format = new Intl.NumberFormat('en-US').format
 	const parser = new DocsParser()
-	text = String(parser.decode(testRender))
+	const source = await fs.loadDocument('src/README.md.js')
+	text = String(parser.decode(source))
 
 	// Create datasets directory if missing
 	try {
