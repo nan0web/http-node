@@ -4,6 +4,12 @@
 	"description": "Authorization node.js server for nan0web",
 	"main": "src/index.js",
 	"type": "module",
+	"files": [
+		"src/**/*.js",
+		"!src/**/*.test.js",
+		"bin/**/*.js",
+		"types/**/*.d.ts"
+	],
 	"bin": {
 		"nan0auth": "bin/auth-server.js"
 	},
