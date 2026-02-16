@@ -6,3 +6,6 @@ me.md
 play-data/
 auth-data/
 test-play-data/
+
+# Test artifacts
+.datasets/
